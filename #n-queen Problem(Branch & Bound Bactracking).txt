@@ -1,0 +1,50 @@
+#n-queen Problem(Branch & Bound Backtracking)
+def is_safe(board, row, col, n, row_mark, slash_mark, backslash_mark):
+    # Check if there is a queen in the same row
+    if row_mark[row]:
+        return False
+
+    # Check if there is a queen in the same slash (/) diagonal
+    if slash_mark[row + col]:
+        return False
+
+    # Check if there is a queen in the same backslash (\) diagonal
+    if backslash_mark[row - col + n - 1]:
+        return False
+
+    return True
+
+def solve_n_queens_util(board, col, n, row_mark, slash_mark, backslash_mark):
+    if col == n:
+        print_solution(board, n)
+        return
+
+    for row in range(n):
+        if is_safe(board, row, col, n, row_mark, slash_mark, backslash_mark):
+            board[row][col] = 'Q'
+            row_mark[row] = True
+            slash_mark[row + col] = True
+            backslash_mark[row - col + n - 1] = True
+
+            solve_n_queens_util(board, col + 1, n, row_mark, slash_mark, backslash_mark)
+
+            board[row][col] = '.'  # Backtrack
+            row_mark[row] = False
+            slash_mark[row + col] = False
+            backslash_mark[row - col + n - 1] = False
+
+def solve_n_queens(n):
+    board = [['.' for _ in range(n)] for _ in range(n)]
+    row_mark = [False] * n
+    slash_mark = [False] * (2 * n - 1)
+    backslash_mark = [False] * (2 * n - 1)
+
+    solve_n_queens_util(board, 0, n, row_mark, slash_mark, backslash_mark)
+
+def print_solution(board, n):
+    for i in range(n):
+        print(' '.join(board[i]))
+    print("\n")
+
+# Example: Solve 8-Queens problem
+solve_n_queens(8)
